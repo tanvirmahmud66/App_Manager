@@ -65,7 +65,7 @@ const Today = ({completed}) => {
         }
     }
 
-    const completeTask = (taskId) => {
+    const completeTask = (taskId, value) => {
         setTimeout(async () => {
           console.log('Task completed with ID:', taskId);
       
@@ -75,7 +75,7 @@ const Today = ({completed}) => {
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ task_id: taskId }),
+              body: JSON.stringify({ task_id: taskId, isComplete:value }),
             });
             let data = await response.json()
             if (response.status === 302) {
@@ -139,7 +139,7 @@ const Today = ({completed}) => {
 
 {/* right side */}
             <div className=''>
-                {completed ? <Completed allCompletedTask={allCompletedTask} deleteTask={deleteTask}/>:<>
+                {completed ? <Completed allCompletedTask={allCompletedTask} deleteTask={deleteTask} completeTask={completeTask}/>:<>
                 <div className='rounded-lg pt-4 h-1/2 mx-4 overflow-scroll p-1'>
                     <div>
                         <form onSubmit={newTask} ref={formRef}>

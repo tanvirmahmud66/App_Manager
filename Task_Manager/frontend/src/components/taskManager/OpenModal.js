@@ -1,15 +1,26 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import DateTimeComponent from '../DateTimeComponent'
 import AuthContext from '../../contexts/AuthContext'
 import TimeComponent from '../TimeComponent'
 
 const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getUpdate}) => {
 
+    console.log("Task Complete: ", task.complete)
     let {user} = useContext(AuthContext)
 
     const[editPortal, setEditPortal] = useState(false)
-
+    const[incomplete, setIncomplete] = useState(task.complete)
     const [taskBody, setTaskBody] = useState(task.task)
+    const [startDateTime, setStartDateTime] = useState('')
+    const [endTime, setEndTime] = useState(task.end)
+
+    useEffect(() => {
+        if (task.start) {
+          const startDateTime = new Date(task.start);
+          const formattedStartDateTime = startDateTime.toISOString().slice(0, 16);
+          setStartDateTime(formattedStartDateTime);
+        }
+    }, [task.start]);
 
     const editButtonHandle = ()=>{
         setEditPortal(!editPortal)
@@ -19,6 +30,11 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
         setTaskBody(event.target.value);
     };
 
+    const inCompleteButtonHandle = (id,value) =>{
+        setIncomplete(false)
+        completeTask(id, value)
+    }
+
     const editTask = async(e, taskId)=>{
         e.preventDefault()
         let response = await fetch(`http://127.0.0.1:8000/api/task/completed/${user?.id}/`,{
@@ -26,7 +42,12 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
             headers:{
                 'Content-Type':'application/json',
             },
-            body: JSON.stringify({'task_id':taskId, 'value':e.target.task.value})
+            body: JSON.stringify({
+                'task_id':taskId, 
+                'value':e.target.task.value,
+                'start':startDateTime,
+                'end':endTime,
+            })
         })
         if(response.status===200){
             getUpdate()
@@ -37,18 +58,18 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
 
   return (
     <div class={`${isOpen? "":"hidden"} justify-center items-center w-full pb-2`}>
-            <div class="mx-1 bg-white rounded-lg shadow-md dark:bg-gray-700 border border-blue-400">
+            <div class={`${task.complete? "mx-4":"mx-1"} bg-white rounded-lg shadow-md dark:bg-gray-700 border ${task.complete?"border-green-400":"border-blue-400"}`}>
                 <div class="mx-4 my-2 flex items-center justify-between rounded-t dark:border-gray-600">
                     {task.start?
                     <>
-                        <p className="me-2 text-xs leading-5 flex items-center justify-center text-blue-600">
+                        <p className={`me-2 text-xs leading-5 flex items-center justify-center ${task.complete?"text-gray-500":"text-blue-600"}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5 me-1">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                             </svg>
                             <DateTimeComponent dateTimeString={task.start} date={true}/>
                         </p>
                         <div className='flex'>
-                            <p className="text-xs leading-5 flex items-center justify-center text-orange-500">
+                            <p className={`text-xs leading-5 flex items-center justify-center ${task.complete?"text-gray-500":"text-orange-500"}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5 me-1 text-red-500">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -93,13 +114,17 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
                                 <div class="flex justify-between items-center">
                                     <input  
                                         name="start" 
-                                        type="datetime-local" 
+                                        type="datetime-local"
+                                        value={startDateTime}
+                                        onChange={(e) => setStartDateTime(e.target.value)}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     />
                                     <span class="mx-4 text-gray-500">to</span>
                                     <input  
                                         name="end" 
-                                        type="time" 
+                                        type="time"
+                                        value={endTime} 
+                                        onChange={(e)=>setEndTime(e.target.value)}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     />
                                 </div>
@@ -117,9 +142,21 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
                     </p>}
                 </div>
                 <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    {task.complete?
+                        <div className='flex items-center'>
+                        <input
+                                onClick={() => inCompleteButtonHandle(task.id, false)}
+                                id={`helper-checkbox-${task.id}`}
+                                aria-describedby={`helper-checkbox-text-${task.id}`}
+                                type="checkbox"
+                                checked={incomplete}
+                                className="w-4 text-green-400 bg-gray-100 cursor-pointer border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <p className='ms-1 text-xs leading-5'>Incomplete</p>
+                    </div>:
                     <div className='flex items-center'>
                         <input
-                                onClick={() => completeTask(task.id)}
+                                onClick={() => completeTask(task.id, true)}
                                 id={`helper-checkbox-${task.id}`}
                                 aria-describedby={`helper-checkbox-text-${task.id}`}
                                 type="checkbox"
@@ -127,11 +164,11 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
                                 className="w-4 text-blue-600 bg-gray-100 cursor-pointer border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         />
                         <p className='ms-1 text-xs leading-5'>Complete task</p>
-                    </div>
+                    </div>}
                     <p className="text-xs leading-5 flex items-center justify-center">
-                        <svg onClick={editButtonHandle} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5 cursor-pointer hover:text-blue-600">
+                        {!task.complete&&<svg onClick={editButtonHandle} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5 cursor-pointer hover:text-blue-600">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                        </svg>
+                        </svg>}
                         <svg onClick={()=>deleteTask(task.id)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5 ms-2 cursor-pointer hover:text-red-600">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                         </svg>

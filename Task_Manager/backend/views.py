@@ -87,8 +87,9 @@ class TaskView(APIView):
     def put(self,request,email_id):
         email = EmailData.objects.get(id=email_id)
         task_id = request.data['task_id']
+        isComplete = request.data['isComplete']
         getTask = TaskDB.objects.get(id=task_id, email=email)
-        getTask.complete = True
+        getTask.complete = isComplete
         getTask.save()
         serializer = TaskDBSerializer(getTask)
         print(getTask)
@@ -111,10 +112,17 @@ class TaskViewAddtional(APIView):
     def put(self, request, email_id):
         task_id = request.data['task_id']
         task_value = request.data['value']
+        start_time = request.data['start']
+        end_time = request.data['end']
+        print(start_time)
+        print(end_time)
         email = EmailData.objects.get(id=email_id)
         getTask = TaskDB.objects.get(email=email, id=task_id)
         getTask.task = task_value
+        if start_time is not None:
+            getTask.start = start_time
+        if end_time is not None:
+            getTask.end = end_time
         getTask.save()
-        print(getTask)
         return Response(status=status.HTTP_200_OK)
 

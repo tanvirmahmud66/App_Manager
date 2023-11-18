@@ -17,7 +17,7 @@ const ListItem = ({task, completeTask, deleteTask, getUpdate}) => {
 
   return (
     <>
-        <li onClick={openModal} className={`mx-4 gap-x-6 p-3 border-[1px] border-blue-400 rounded-lg hover:cursor-pointer mt-4 mb-1 ${isOpen? "bg-blue-100":"bg-white"}  hover:bg-blue-100 transition-all duration-200`}>
+        <li onClick={openModal} className={`mx-4 gap-x-6 p-3 border-[1px] ${task.complete? "border-green-400":"border-blue-400"} rounded-lg hover:cursor-pointer mt-4 mb-1 ${isOpen? `${task.complete?"bg-green-100":"bg-blue-100"}`:"bg-white"}  hover:${task.complete?"bg-green-100":"bg-blue-100"} transition-all duration-200`}>
             <div className='w-full flex justify-between items-center'> 
                 <div className="flex items-center min-w-0 gap-x-4">
                     <div className="min-w-0 flex justify-center items-center">
