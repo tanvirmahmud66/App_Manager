@@ -55,12 +55,18 @@ const Calendar = () => {
         if ((i === 0 && j < firstDay) || dayCount > lastDay) {
           week.push(<div key={`${i}-${j}`} />);
         } else {
-          const isCurrentDate = dayCount === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear();
+          const clickedDay = dayCount;
+          const isCurrentDate =
+            dayCount === currentDate.getDate() &&
+            currentMonth === currentDate.getMonth() &&
+            currentYear === currentDate.getFullYear();
           week.push(
             <div
               key={`${i}-${j}`}
               className={`day text-center cursor-pointer my-1 rounded-md py-1 border border-gray-200 ${isCurrentDate ? 'bg-blue-200' : ''}`}
-              onClick={() => alert(`Clicked on ${dayCount}-${currentMonth + 1}-${currentYear}`)}
+              onClick={() =>
+                alert(`Clicked on: ${clickedDay}-${currentMonth + 1}-${currentYear}`)
+              }
             >
               {dayCount}
             </div>

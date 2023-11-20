@@ -58,7 +58,7 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
 
   return (
     <div class={`${isOpen? "":"hidden"} justify-center items-center w-full pb-2`}>
-            <div class={`${task.complete? "mx-4":"mx-1"} bg-white rounded-lg shadow-md dark:bg-gray-700 border ${task.complete?"border-green-400":"border-blue-400"}`}>
+            <div class={`${task.complete? "mx-4":"mx-4"} bg-white rounded-lg shadow-md dark:bg-gray-700 border ${task.complete?"border-green-400":"border-blue-400"}`}>
                 <div class="mx-4 my-2 flex items-center justify-between rounded-t dark:border-gray-600">
                     {task.start?
                     <>
@@ -77,8 +77,8 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
                                 <DateTimeComponent dateTimeString={task.start} time={true}/>
                             </p>
                             {task.end &&
-                            <p className="ms-4 text-xs leading-5 flex items-center justify-center text-green-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-5 h-5 me-1 text-green-500">
+                            <p className={`ms-4 text-xs leading-5 flex items-center justify-center ${task.complete?"text-gray-500":"text-green-500"}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" className={`w-5 h-5 me-1 text-green-500`}>
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <p className='text-xs leading-5 me-1'>End:</p>
@@ -152,7 +152,7 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
                                 checked={incomplete}
                                 className="w-4 text-green-400 bg-gray-100 cursor-pointer border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         />
-                        <p className='ms-1 text-xs leading-5'>Incomplete</p>
+                        <p className='ms-1 text-xs leading-5'>Completed</p>
                     </div>:
                     <div className='flex items-center'>
                         <input

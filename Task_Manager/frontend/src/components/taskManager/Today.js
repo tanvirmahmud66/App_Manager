@@ -5,10 +5,11 @@ import Completed from '../../components/taskManager/Completed';
 import ListItem from './ListItem';
 
 
-const Today = ({completed}) => {
+const Today = () => {
 
     const formRef = useRef()
     let {user} = useContext(AuthContext)
+    const [create, setCreate] = useState(false)
     const [allTask, setAllTask] = useState()
     const [allCompletedTask, setAllCompletedTask] = useState()
     const [spinner, setSpinner] = useState(false)
@@ -60,6 +61,7 @@ const Today = ({completed}) => {
         let data = await response.json()
         if (response.status===201){
             getTask()
+            setCreate(false)
             formRef.current.reset();
             setSpinner(false)
         }
@@ -119,47 +121,36 @@ const Today = ({completed}) => {
 
 
   return (
-    <div class="grid grid-cols-2 pt-4">
+    <div class="grid grid-cols-2 h-[740px]">
 
 {/* left side */}
-            <div className='rounded-lg h-[720px] bg-white overflow-hidden'>
-                <div className='max-h-[720px] overflow-scroll scroll-p-0'>
-                    <ul className="">
-                        {allTask && allTask.map((each)=>{
-                            return(
-                                <ListItem key={each.id} task={each} completeTask={completeTask} deleteTask={deleteTask} getUpdate={getUpdate}/>
-                            )
-                        })}
-                    </ul>
-                    <div className='rounded-lg h-[130px] m-4 flex justify-center items-center overflow-scroll bg-white text-gray-400'>
-                        No more task
+            <div className='rounded-lg bg-white overflow-scroll scroll-p-0'>
+                <div onClick={()=>setCreate(!create)} className={`mx-4 gap-x-6 rounded-lg hover:cursor-pointer mt-4 mb-1 transition-all duration-200`}>
+                    <div className='flex justify-between items-center rounded-lg ps-3 pe-1 py-1 text-xs leading-5 text-gray-400 border-[1px] border-gray-500 cursor-text'>
+                        <>new task...</>
+                        <button type="button" class="text-white bg-blue-500 hover:bg-blue-800 cursor-pointer focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Add Task</button>
                     </div>
                 </div>
-            </div>
-
-{/* right side */}
-            <div className=''>
-                {completed ? <Completed allCompletedTask={allCompletedTask} deleteTask={deleteTask} completeTask={completeTask}/>:<>
-                <div className='rounded-lg pt-4 h-1/2 mx-4 overflow-scroll p-1'>
-                    <div>
+                {create &&
+                <div className='rounded-lg mx-4'>
+                    <div className='border-[2px] border-blue-500 p-2 rounded-lg'>
                         <form onSubmit={newTask} ref={formRef}>
-                            <textarea id="task" name='task' rows="10" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="New task..." required></textarea>
-
-                            <div class="flex justify-between items-center mt-3">
+                            <textarea id="task" name='task' rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="write your task here..." required></textarea>
+                            <div class="flex justify-between items-center mt-1">
                                 <input  
                                     name="start" 
                                     type="datetime-local" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 />
                                 <span class="mx-4 text-gray-500">to</span>
                                 <input  
                                     name="end" 
                                     type="time" 
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                 />
                             </div>
                             {spinner?
-                                <button type="submit" class="mt-3 w-full text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <button type="submit" class="mt-2 w-full text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <div role="status">
                                         <svg aria-hidden="true" class="inline w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -168,16 +159,29 @@ const Today = ({completed}) => {
                                         <span class="sr-only">Loading...</span>
                                     </div>
                                 </button>:
-                                <button type="submit" class="mt-3 w-full text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Task</button>
+                                <button type="submit" class="mt-2 w-full text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Task</button>
                             }
                         </form>
                     </div>
-
-
+                </div>}
+                <div className=''>
+                    <ul className="">
+                        {allTask && allTask.map((each)=>{
+                            return(
+                                <ListItem key={each.id} task={each} completeTask={completeTask} deleteTask={deleteTask} getUpdate={getUpdate}/>
+                            )
+                        })}
+                    </ul>
+                    {(allTask && allTask.length===0) &&
+                    <div className='rounded-lg h-[130px] m-4 flex justify-center items-center overflow-scroll bg-white text-gray-400'>
+                        No more task
+                    </div>}
                 </div>
-                <div className='rounded-lg h-auto pt-2 overflow-scroll bg-white'>
-                    <Calendar/>
-                </div></>}
+            </div>
+
+{/* right side */}
+            <div className=''>
+                <Completed allCompletedTask={allCompletedTask} deleteTask={deleteTask} completeTask={completeTask}/>
             </div>
 
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import OpenModal from './OpenModal';
 import DateTimeComponent from '../DateTimeComponent';
+import CheckLogo from '../../assets/check.png'
 
 const ListItem = ({task, completeTask, deleteTask, getUpdate}) => {
 
@@ -21,6 +22,7 @@ const ListItem = ({task, completeTask, deleteTask, getUpdate}) => {
             <div className='w-full flex justify-between items-center'> 
                 <div className="flex items-center min-w-0 gap-x-4">
                     <div className="min-w-0 flex justify-center items-center">
+                        {task.complete && <img src={CheckLogo} width={15} className='me-2' alt='check logo'/>}
                         <div className='truncate text-xs leading-5'>
                             <p className="">
                                 {task.task}
