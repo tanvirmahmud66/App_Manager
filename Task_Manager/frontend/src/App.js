@@ -2,13 +2,14 @@ import { HashRouter as Router, Routes, Route, Link } from "react-router-dom";
 import SidebarLogo from "./assets/apps.png";
 import TaskLogo from './assets/completed-task.png'
 import weatherLogo from './assets/cloudy.png'
-import chatLogo from './assets/message.png'
+import QuizLogo from './assets/quiz.png'
 import TaskManager from "./pages/task_manager/TaskManager";
 import Weather from "./pages/weather/Weather";
 import mapLogo from './assets/map.png'
 import { useContext, useState } from "react";
 import AuthContext from "./contexts/AuthContext";
 import Verified from "./components/Verified";
+import QuizApp from "./pages/quiz/QuizApp";
 
 function App() {
 
@@ -110,10 +111,10 @@ function App() {
                   </Link>
               </li>
               <li>
-                  <a href="#" className="text-sm flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <img src={chatLogo} width={25} alt="task logo"/>
-                    <span className="flex-1 ms-3 whitespace-nowrap">Chat App</span>
-                  </a>
+                  <Link to="/quiz" className="text-sm flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <img src={QuizLogo} width={25} alt="task logo"/>
+                    <span className="flex-1 ms-3 whitespace-nowrap">Quiz App</span>
+                  </Link>
               </li>
               <li>
                   <a href="#" className="text-sm flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -146,7 +147,7 @@ function App() {
             <Routes>
               <Route path='/' element={<TaskManager/>}/>
               <Route path='/weather' element={<Weather/>}/>
-              <Route path='/chat'/>
+              <Route path='/quiz' element={<QuizApp/>}/>
               <Route path='/appname'/>
               <Route path='/appname'/>
               <Route path='/appname'/>
