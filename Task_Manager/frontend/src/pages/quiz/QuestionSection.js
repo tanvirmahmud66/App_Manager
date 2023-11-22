@@ -1,4 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
+import CheckLogo from '../../assets/check.png'
+import WrongLogo from '../../assets/WrongLogo.png'
 
 const QuestionSection = ({questions, questionSection}) => {
 
@@ -69,7 +71,12 @@ const QuestionSection = ({questions, questionSection}) => {
     <div className='h-[88vh] p-4'>
         {!finished?
         <div>
-            <h2 className='text-xl mb-8 bg-red-950 text-white p-4 rounded-sm'>Question {currentQuestionIndex + 1} / {questions.length}</h2>
+            <div className='text-xl mb-8 flex items-center bg-red-950 text-white p-4 rounded-sm'>
+                <>Question {currentQuestionIndex + 1} / {questions.length}</>
+                {correct && <img src={CheckLogo} width={30} className='ms-2' alt='check logo'/>}
+                {wrong && <img src={WrongLogo} width={32} className='ms-2' alt='check logo'/>}
+                
+            </div>
             <p className='my-4 ms-4 text-2xl'>{currentQuestion.question}</p>
             <form onSubmit={checkAnswer} ref={formRef}>
                 <ul className='ms-4'>

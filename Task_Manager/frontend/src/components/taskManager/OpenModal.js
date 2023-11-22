@@ -13,6 +13,7 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
     const [taskBody, setTaskBody] = useState(task.task)
     const [startDateTime, setStartDateTime] = useState('')
     const [endTime, setEndTime] = useState(task.end)
+    const BaseUrl = "https://tanvir61.pythonanywhere.com"
 
     useEffect(() => {
         if (task.start) {
@@ -37,7 +38,7 @@ const OpenModal = ({isOpen, onRequestClose, task, completeTask, deleteTask, getU
 
     const editTask = async(e, taskId)=>{
         e.preventDefault()
-        let response = await fetch(`http://127.0.0.1:8000/api/task/completed/${user?.id}/`,{
+        let response = await fetch(`${BaseUrl}/api/task/completed/${user?.id}/`,{
             method:"put",
             headers:{
                 'Content-Type':'application/json',

@@ -14,9 +14,10 @@ const Today = () => {
     const [allCompletedTask, setAllCompletedTask] = useState()
     const [spinner, setSpinner] = useState(false)
     
+    const BaseUrl = "https://tanvir61.pythonanywhere.com"
 
     let getTask = async()=>{
-        let response = await fetch(`http://127.0.0.1:8000/api/task/${user?.id}/`,{
+        let response = await fetch(`${BaseUrl}/api/task/${user?.id}/`,{
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -30,7 +31,7 @@ const Today = () => {
     }
 
     let getCompleteTask = async()=>{
-        let response = await fetch(`http://127.0.0.1:8000/api/task/completed/${user?.id}/`,{
+        let response = await fetch(`${BaseUrl}/api/task/completed/${user?.id}/`,{
             method: 'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -51,7 +52,7 @@ const Today = () => {
             start: e.target.start.value || null,
             end: e.target.end.value || null,
         };
-        let response = await fetch(`http://127.0.0.1:8000/api/task/${user?.id}/`,{
+        let response = await fetch(`${BaseUrl}/api/task/${user?.id}/`,{
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -72,7 +73,7 @@ const Today = () => {
           console.log('Task completed with ID:', taskId);
       
           try {
-            const response = await fetch(`http://127.0.0.1:8000/api/task/${user?.id}/`, {
+            const response = await fetch(`${BaseUrl}/api/task/${user?.id}/`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ const Today = () => {
     // edit task build inside open modal
 
     const deleteTask = async(taskId) => {
-        let response = await fetch(`http://127.0.0.1:8000/api/task/completed/${user?.id}/`,{
+        let response = await fetch(`${BaseUrl}/api/task/completed/${user?.id}/`,{
             method: "POST",
             headers:{
                 'Content-Type': 'application/json',
@@ -121,7 +122,7 @@ const Today = () => {
 
 
   return (
-    <div class="grid grid-cols-2 h-[740px]">
+    <div class="grid lg:grid-cols-2 h-[740px]">
 
 {/* left side */}
             <div className='rounded-lg bg-white overflow-scroll scroll-p-0'>
@@ -180,7 +181,7 @@ const Today = () => {
             </div>
 
 {/* right side */}
-            <div className=''>
+            <div className='hidden lg:block'>
                 <Completed allCompletedTask={allCompletedTask} deleteTask={deleteTask} completeTask={completeTask}/>
             </div>
 

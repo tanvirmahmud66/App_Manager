@@ -12,10 +12,12 @@ export const AuthProvider = ({children}) =>{
     const[spinner, setSpinner] = useState(false)
     const[user, setUser] = useState(()=> localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null)
 
+    const BaseUrl = "https://tanvir61.pythonanywhere.com"
+
     let enterApp = async(e)=>{
         setSpinner(true)
         e.preventDefault()
-        let response = await fetch('http://127.0.0.1:8000/api/email/auth/',{
+        let response = await fetch(`${BaseUrl}/api/email/auth/`,{
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
